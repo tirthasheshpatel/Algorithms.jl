@@ -1,4 +1,3 @@
-using BenchmarkTools
 include("src/quick.jl")
 include("src/merge.jl")
 include("src/selection.jl")
@@ -19,6 +18,9 @@ function main(args)
     inc::Int         = parse(Int, args[5])
     filename::String =            args[6]
 
+    dtime::Float64      = 0.0
+    dtime_best::Float64 = 1000.0
+
     @show algo
     @show nrep
     @show start
@@ -26,50 +28,104 @@ function main(args)
     @show inc
     @show filename
 
-    BenchmarkTools.DEFAULT_PARAMETERS.samples = nrep
-
     buffer = "size, time\n"
 
     if algo == "quick"
         for len ∈ start:inc:stop
-            res = @benchmark quicksort!(a, 1, $len) setup=(a=randn($len));
-            buffer *= "$len, $(minimum(res.times))\n"
+            for rep ∈ 1:nrep
+                a = randn(len)
+                dtime = time()
+                quicksort!(a, 1, len);
+                dtime = time() - dtime
+                if rep == 1 dtime_best = dtime
+                else dtime_best = ( dtime < dtime_best ? dtime : dtime_best )
+                end
+            end
+            buffer *= "$len, $(dtime_best*1.0e09)\n"
         end
     end
     if algo == "merge"
         for len ∈ start:inc:stop
-            res = @benchmark mergesort!(a, 1, $len) setup=(a=randn($len));
-            buffer *= "$len, $(minimum(res.times))\n"
+            for rep ∈ 1:nrep
+                a = randn(len)
+                dtime = time()
+                mergesort!(a, 1, len);
+                dtime = time() - dtime
+                if rep == 1 dtime_best = dtime
+                else dtime_best = ( dtime < dtime_best ? dtime : dtime_best )
+                end
+            end
+            buffer *= "$len, $(dtime_best*1.0e09)\n"
         end
     end
     if algo == "insertion"
         for len ∈ start:inc:stop
-            res = @benchmark insertionsort!(a) setup=(a=randn($len));
-            buffer *= "$len, $(minimum(res.times))\n"
+            for rep ∈ 1:nrep
+                a = randn(len)
+                dtime = time()
+                insertionsort!(a);
+                dtime = time() - dtime
+                if rep == 1 dtime_best = dtime
+                else dtime_best = ( dtime < dtime_best ? dtime : dtime_best )
+                end
+            end
+            buffer *= "$len, $(dtime_best*1.0e09)\n"
         end
     end
     if algo == "selection"
         for len ∈ start:inc:stop
-            res = @benchmark selectionsort!(a) setup=(a=randn($len));
-            buffer *= "$len, $(minimum(res.times))\n"
+            for rep ∈ 1:nrep
+                a = randn(len)
+                dtime = time()
+                selectionsort!(a);
+                dtime = time() - dtime
+                if rep == 1 dtime_best = dtime
+                else dtime_best = ( dtime < dtime_best ? dtime : dtime_best )
+                end
+            end
+            buffer *= "$len, $(dtime_best*1.0e09)\n"
         end
     end
     if algo == "bubble"
         for len ∈ start:inc:stop
-            res = @benchmark bubblesort!(a) setup=(a=randn($len));
-            buffer *= "$len, $(minimum(res.times))\n"
+            for rep ∈ 1:nrep
+                a = randn(len)
+                dtime = time()
+                bubblesort!(a);
+                dtime = time() - dtime
+                if rep == 1 dtime_best = dtime
+                else dtime_best = ( dtime < dtime_best ? dtime : dtime_best )
+                end
+            end
+            buffer *= "$len, $(dtime_best*1.0e09)\n"
         end
     end
     if algo == "counting"
         for len ∈ start:inc:stop
-            res = @benchmark countingsort(a) setup=(a=rand(1:10_000, $len));
-            buffer *= "$len, $(minimum(res.times))\n"
+            for rep ∈ 1:nrep
+                a = rand(0:1_000_000, len)
+                dtime = time()
+                countingsort(a);
+                dtime = time() - dtime
+                if rep == 1 dtime_best = dtime
+                else dtime_best = ( dtime < dtime_best ? dtime : dtime_best )
+                end
+            end
+            buffer *= "$len, $(dtime_best*1.0e09)\n"
         end
     end
     if algo == "inbuilt"
         for len ∈ start:inc:stop
-            res = @benchmark sort!(a) setup=(a=randn($len));
-            buffer *= "$len, $(minimum(res.times))\n"
+            for rep ∈ 1:nrep
+                a = randn(len)
+                dtime = time()
+                sort!(a);
+                dtime = time() - dtime
+                if rep == 1 dtime_best = dtime
+                else dtime_best = ( dtime < dtime_best ? dtime : dtime_best )
+                end
+            end
+            buffer *= "$len, $(dtime_best*1.0e09)\n"
         end
     end
 

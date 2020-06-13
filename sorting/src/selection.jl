@@ -4,13 +4,13 @@ function selectionsort!(x::AbstractArray)
         # mi = minimum index
         mi = i
         for j ∈ (i+1):n
-            if x[j] ≤ x[mi]
+            @inbounds if x[j] ≤ x[mi]
                 mi = j
             end
         end
-        tmp   = x[i]
-        x[i]  = x[mi]
-        x[mi] = tmp
+        @inbounds tmp   = x[i]
+        @inbounds x[i]  = x[mi]
+        @inbounds x[mi] = tmp
     end
     return nothing
 end

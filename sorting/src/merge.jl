@@ -5,33 +5,33 @@ Merges tow sorted arrays inplace of size `q-p+1` and `r-q` into one
 sorted array. For private use only.
 """
 function _merge!(x::AbstractArray, p::Int, q::Int, r::Int)
-    x1 = x[p:q]
-    x2 = x[(q+1):r]
+    @inbounds x1 = x[p:q]
+    @inbounds x2 = x[(q+1):r]
 
     i = p
     j = q+1
     k = p
 
     while i ≤ q && j ≤ r
-        if x1[i-p+1] < x2[j-q]
-            x[k] = x1[i-p+1]
+        @inbounds if x1[i-p+1] < x2[j-q]
+            @inbounds x[k] = x1[i-p+1]
             k += 1
             i += 1
         else
-            x[k] = x2[j-q]
+            @inbounds x[k] = x2[j-q]
             k += 1
             j += 1
         end
     end
 
     while i ≤ q
-        x[k] = x1[i-p+1]
+        @inbounds x[k] = x1[i-p+1]
         k += 1
         i += 1
     end
 
     while j ≤ r
-        x[k] = x2[j-q]
+        @inbounds x[k] = x2[j-q]
         k += 1
         j += 1
     end

@@ -4,10 +4,10 @@ CFLAGS      := -O3 -m64 -mavx2 -std=c99 -march=native -fopenmp -D_POSIX_C_SOURCE
 FFLAGS      := $(CFLAGS)
 
 NREPEATS    := 3
-NFIRST      := 50
-NLAST_SMALL := 500
-NLAST       := 1500
-NINC        := 50
+NFIRST      := 5000
+NLAST_SMALL := 10000
+NLAST       := 1500000
+NINC        := 50000
 
 LDFLAGS     := -lpthread -m64 -lm -fopenmp
 

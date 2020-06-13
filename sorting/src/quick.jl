@@ -1,17 +1,17 @@
 function _partition(x::AbstractArray, p::Int, r::Int)::Int
-    y = x[r]
+    @inbounds y = x[r]
     i = p-1
     for j ∈ p:(r-1)
-        if x[j] ≤ y
+        @inbounds if x[j] ≤ y
             i += 1
-            tmp  = x[i]
-            x[i] = x[j]
-            x[j] = tmp
+            @inbounds tmp  = x[i]
+            @inbounds x[i] = x[j]
+            @inbounds x[j] = tmp
         end
     end
-    tmp    = x[i+1]
-    x[i+1] = x[r]
-    x[r]   = tmp
+    @inbounds tmp    = x[i+1]
+    @inbounds x[i+1] = x[r]
+    @inbounds x[r]   = tmp
     return i+1
 end
 

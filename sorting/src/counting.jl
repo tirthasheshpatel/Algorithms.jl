@@ -4,14 +4,14 @@ function countingsort(x::AbstractArray{<:Int})::AbstractArray{<:Int}
     count = zeros(Int, n)
     aux = copy(x)
     for i ∈ 1:l
-        count[x[i]+1]+=1
+        @inbounds count[x[i]+1]+=1
     end
     for i ∈ 2:n
-        count[i] += count[i-1]
+        @inbounds count[i] += count[i-1]
     end
     for i ∈ l:-1:1
-        aux[count[x[i]+1]] = x[i]
-        count[x[i]+1]-=1
+        @inbounds aux[count[x[i]+1]] = x[i]
+        @inbounds count[x[i]+1]-=1
     end
     return aux
 end
