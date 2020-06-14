@@ -11,8 +11,9 @@ NINC        := 50000
 
 LDFLAGS     := -lpthread -m64 -lm -fopenmp
 
-UTIL_OBJS   := cutil/FLA_Clock.o cutil/RandomMatrix.o
-SRC_OBJS    := csrc/counting.o csrc/quick.o driver.o
+UTIL_OBJS   := cutil/FLA_Clock.o cutil/RandomMatrix.o cutil/swap.o
+SRC_OBJS    := csrc/counting.o csrc/quick.o csrc/merge.o driver.o
+
 
 jl_sorts:
 	make julia_merge_sort
@@ -21,14 +22,18 @@ jl_sorts:
 	make julia_inbuilt_sort
 	make plot
 
+
 c_sorts:
 	make c_quick_sort
 	make c_counting_sort
+	make c_merge_sort
 	make clean
+
 
 # Build the driver for benchmarking c algorithms.
 driver.x: $(UTIL_OBJS) $(SRC_OBJS)
 	$(LINKER) $(UTIL_OBJS) $(SRC_OBJS) -o driver.x $(LDFLAGS)
+
 
 # Build all the sorting algos for c
 c_quick_sort: driver.x
@@ -36,6 +41,10 @@ c_quick_sort: driver.x
 
 c_counting_sort: driver.x
 	./driver.x counting $(NREPEATS) $(NFIRST) $(NLAST) $(NINC) > outputs/c_counting_sort.csv
+
+c_merge_sort: driver.x
+	./driver.x merge $(NREPEATS) $(NFIRST) $(NLAST) $(NINC) > outputs/c_merge_sort.csv
+
 
 # Benchmarking Julia's sorting algorithms
 julia_merge_sort:

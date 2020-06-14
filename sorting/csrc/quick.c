@@ -1,13 +1,8 @@
-void swap(int* a, int* b)
-{
-    int temp = *a;
-    *a = *b;
-    *b = temp;
-}
+void swap(double *, double *);
 
-int partition(int *arr, int start, int end)
+int partition(double *arr, int start, int end)
 {
-    int pivot = arr[end];
+    double pivot = arr[end];
     int i = start-1, j = start, k = end;
 
     while( j != k ) {
@@ -22,7 +17,7 @@ int partition(int *arr, int start, int end)
     return i+1;
 }
 
-void quicksort(int *arr, int start, int end)
+void quicksort(double *arr, int start, int end)
 {
     if(start < end) {
         int i = partition( arr, start, end );
