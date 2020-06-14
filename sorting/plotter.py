@@ -6,7 +6,7 @@ from pprint import pprint
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-np.random.seed(420)
+np.random.seed(420000)
 
 
 def color_gen(n):
@@ -25,8 +25,8 @@ if __name__ == '__main__':
         results = pd.read_csv(f).values
         _, name = split(f)
         c = next(color)
-        plt.scatter(results[:, 0], results[:, 1], label=f"{' '.join(name.split('_'))}", color=c)
-        plt.plot(   results[:, 0], results[:, 1], label=f"{' '.join(name.split('_'))}", color=c)
+        plt.scatter(results[:, 0], results[:, 1], label=f"{' '.join(name.split('_'))[:-4]}", color=c)
+        plt.plot(   results[:, 0], results[:, 1],                                            color=c)
     plt.legend()
     plt.xlabel("Size of the array.")
     plt.ylabel("Time (ns)")

@@ -1,4 +1,4 @@
-CC          := g++
+CC          := gcc
 LINKER      := $(CC)
 CFLAGS      := -O3 -m64 -mavx2 -std=c99 -march=native -fopenmp -D_POSIX_C_SOURCE=200809L
 FFLAGS      := $(CFLAGS)
@@ -10,6 +10,32 @@ NLAST       := 1500000
 NINC        := 50000
 
 LDFLAGS     := -lpthread -m64 -lm -fopenmp
+
+UTIL_OBJS   := cutil/FLA_Clock.o cutil/RandomMatrix.o
+SRC_OBJS    := csrc/counting.o csrc/quick.o driver.o
+
+jl_sorts:
+	make julia_merge_sort
+	make julia_quick_sort
+	make julia_counting_sort
+	make julia_inbuilt_sort
+	make plot
+
+c_sorts:
+	make c_quick_sort
+	make c_counting_sort
+	make clean
+
+# Build the driver for benchmarking c algorithms.
+driver.x: $(UTIL_OBJS) $(SRC_OBJS)
+	$(LINKER) $(UTIL_OBJS) $(SRC_OBJS) -o driver.x $(LDFLAGS)
+
+# Build all the sorting algos for c
+c_quick_sort: driver.x
+	./driver.x quick $(NREPEATS) $(NFIRST) $(NLAST) $(NINC) > outputs/c_quick_sort.csv
+
+c_counting_sort: driver.x
+	./driver.x counting $(NREPEATS) $(NFIRST) $(NLAST) $(NINC) > outputs/c_counting_sort.csv
 
 # Benchmarking Julia's sorting algorithms
 julia_merge_sort:
@@ -27,9 +53,5 @@ julia_inbuilt_sort:
 plot:
 	python plotter.py outputs
 
-all:
-	make julia_merge_sort
-	make julia_quick_sort
-	make julia_counting_sort
-	make julia_inbuilt_sort
-	make plot
+clean:
+	rm -f *.x *.o cutil/*.o csrc/*.o
